@@ -1,4 +1,4 @@
-package ir.bahmanghasemi.todayquote.ui.theme
+package ir.bahmanghasemi.todayquote.common.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build

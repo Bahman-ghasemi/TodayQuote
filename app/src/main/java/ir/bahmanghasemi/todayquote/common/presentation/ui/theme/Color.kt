@@ -1,4 +1,4 @@
-package ir.bahmanghasemi.todayquote.ui.theme
+package ir.bahmanghasemi.todayquote.common.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

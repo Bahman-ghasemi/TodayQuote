@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import ir.bahmanghasemi.todayquote.ui.theme.TodayQuoteTheme
+import ir.bahmanghasemi.todayquote.common.presentation.ui.theme.TodayQuoteTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
