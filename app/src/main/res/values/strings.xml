@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TodayQuote</string>
+    <string name="networkNotAvailable">Internet Connection Not Available</string>
 </resources>
