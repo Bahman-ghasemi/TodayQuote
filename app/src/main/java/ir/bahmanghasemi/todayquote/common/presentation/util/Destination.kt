@@ -3,10 +3,13 @@ package ir.bahmanghasemi.todayquote.common.presentation.util
 import kotlinx.serialization.Serializable
 
 @Serializable
-object HomeRoute
+object DailyRoute
 
 @Serializable
-object CategoryRoute
+object AuthorRoute
 
 @Serializable
-object ProfileRoute
+object FavoriteRoute
+
+@Serializable
+object NotificationRoute
