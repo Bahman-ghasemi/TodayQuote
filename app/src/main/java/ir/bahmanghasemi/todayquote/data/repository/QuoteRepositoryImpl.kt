@@ -12,10 +12,9 @@ class QuoteRepositoryImpl @Inject constructor(
 ) : QuoteRepository {
 
     override suspend fun getRandomQuote(): Response<Quote> {
-        val filter = mapOf(
-            "minLength" to 100,
-            "maxLength" to 150
-        )
+        val filter = mutableMapOf<String, Int>()
+        filter["minLength"] = 100
+        filter["maxLength"] = 150
         return api.getRandomQuote(filter)
     }
 

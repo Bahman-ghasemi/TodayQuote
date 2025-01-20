@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,6 +34,7 @@ import ir.bahmanghasemi.todayquote.common.presentation.util.Extension.Navigation
 import ir.bahmanghasemi.todayquote.common.presentation.util.DailyRoute
 import ir.bahmanghasemi.todayquote.common.presentation.util.FavoriteRoute
 import ir.bahmanghasemi.todayquote.common.presentation.util.NotificationRoute
+import ir.bahmanghasemi.todayquote.presentation.daily_quote.QuoteViewModel
 import ir.bahmanghasemi.todayquote.presentation.daily_quote.composable.DailyQuoteScreen
 
 @AndroidEntryPoint
@@ -130,9 +133,11 @@ private fun BottomNavMenu(navController: NavHostController = rememberNavControll
 
 @Composable
 private fun AppNavigation(paddingValues: PaddingValues, navController: NavHostController) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(paddingValues)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
         NavHost(navController = navController, startDestination = DailyRoute) {
             composable<DailyRoute> {
                 DailyQuoteScreen()

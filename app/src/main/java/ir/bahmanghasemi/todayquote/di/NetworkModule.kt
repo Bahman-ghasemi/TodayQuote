@@ -25,10 +25,6 @@ object NetworkModule {
     fun provideOkHttpClient(): OkHttpClient {
         val client = OkHttpClient.Builder()
         val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-        client.callTimeout(20, TimeUnit.SECONDS)
-        client.connectTimeout(20, TimeUnit.SECONDS)
-        client.readTimeout(20, TimeUnit.SECONDS)
-        client.writeTimeout(20, TimeUnit.SECONDS)
         client.addInterceptor(logging)
         return client.build()
     }
@@ -38,7 +34,7 @@ object NetworkModule {
         client: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(Const.BASE_URL)
+            .baseUrl(Const.MOCK_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
