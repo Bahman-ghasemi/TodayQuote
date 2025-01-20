@@ -1,5 +1,13 @@
 package ir.bahmanghasemi.todayquote.common.presentation.util
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -9,7 +17,10 @@ import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.IntrinsicMeasurable
 import androidx.compose.ui.layout.IntrinsicMeasureScope
@@ -120,4 +131,72 @@ object Extension {
         }
     }
 
+    fun Modifier.shimmerEffect(
+        isLoading: Boolean = false, // <-- New parameter for start/stop.
+        widthOfShadowBrush: Int = 500,
+        angleOfAxisY: Float = 270f,
+        durationMillis: Int = 1000,
+    ): Modifier {
+        if (!isLoading) { // <-- Step 1.
+            return this
+        }
+        else {
+            return composed {
+
+                // Step 2.
+                val shimmerColors = ShimmerAnimationData(isLightMode = !isSystemInDarkTheme()).getColours()
+
+                val transition = rememberInfiniteTransition(label = "")
+
+                val translateAnimation = transition.animateFloat(
+                    initialValue = 0f,
+                    targetValue = (durationMillis + widthOfShadowBrush).toFloat(),
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(
+                            durationMillis = durationMillis,
+                            easing = LinearEasing,
+                        ),
+                        repeatMode = RepeatMode.Restart,
+                    ),
+                    label = "Shimmer loading animation",
+                )
+
+                this.background(
+                    brush = Brush.linearGradient(
+                        colors = shimmerColors,
+                        start = Offset(x = translateAnimation.value - widthOfShadowBrush, y = 0.0f),
+                        end = Offset(x = translateAnimation.value, y = angleOfAxisY),
+                    ),
+                )
+            }
+        }
+    }
+
+    data class ShimmerAnimationData(
+        private val isLightMode: Boolean
+    ) {
+        fun getColours(): List<Color> {
+            return if (isLightMode) {
+                val color = Color.White
+
+                listOf(
+                    color.copy(alpha = 0.3f),
+                    color.copy(alpha = 0.5f),
+                    color.copy(alpha = 1.0f),
+                    color.copy(alpha = 0.5f),
+                    color.copy(alpha = 0.3f),
+                )
+            } else {
+                val color = Color.Black
+
+                listOf(
+                    color.copy(alpha = 0.0f),
+                    color.copy(alpha = 0.3f),
+                    color.copy(alpha = 0.5f),
+                    color.copy(alpha = 0.3f),
+                    color.copy(alpha = 0.0f),
+                )
+            }
+        }
+    }
 }

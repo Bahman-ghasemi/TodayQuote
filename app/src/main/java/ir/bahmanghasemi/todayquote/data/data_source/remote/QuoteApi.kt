@@ -9,7 +9,7 @@ import retrofit2.http.QueryMap
 interface QuoteApi {
 
     @GET("random")
-    suspend fun getRandomQuote(@QueryMap filter: Map<String, Any>?): Response<Quote>
+    suspend fun getRandomQuote(@QueryMap filter: Map<String, Int> = emptyMap()): Response<Quote>
 
     @GET("quotes/random")
     suspend fun getQuotes(@QueryMap filter: Map<String, Any>?): Response<List<Quote>>

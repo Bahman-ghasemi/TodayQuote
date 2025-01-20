@@ -25,6 +25,7 @@ class QuoteViewModel @Inject constructor(
     val quoteUiState = _quoteUiState.asStateFlow()
 
     fun getRandomQuote() {
+        _quoteUiState.update { QuoteUiState(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             if (Connectivity.isNetworkAvailable(application.applicationContext)) {
                 try {
@@ -35,13 +36,16 @@ class QuoteViewModel @Inject constructor(
                         }
                     } else {
                         _quoteUiState.update { QuoteUiState(errorMessage = response.message()) }
+                        print("error-log-> ${response.message()}")
                     }
                 } catch (ex: Exception) {
                     _quoteUiState.update { QuoteUiState(errorMessage = ex.localizedMessage) }
+                    print("error-log-> ${ex.localizedMessage}")
                 }
 
             } else {
                 _quoteUiState.update { QuoteUiState(errorMessage = application.applicationContext.getString(R.string.networkNotAvailable)) }
+                print("error-log-> no internet connection!")
             }
         }
     }
