@@ -5,17 +5,20 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ir.bahmanghasemi.todayquote.common.data.util.Const
+import ir.bahmanghasemi.todayquote.data.data_source.remote.AuthorApi
 import ir.bahmanghasemi.todayquote.data.data_source.remote.QuoteApi
+import ir.bahmanghasemi.todayquote.data.repository.AuthorRepositoryImpl
 import ir.bahmanghasemi.todayquote.data.repository.QuoteRepositoryImpl
+import ir.bahmanghasemi.todayquote.domain.repository.AuthorRepository
 import ir.bahmanghasemi.todayquote.domain.repository.QuoteRepository
-import ir.bahmanghasemi.todayquote.domain.use_case.DailyQuoteUseCase
-import ir.bahmanghasemi.todayquote.domain.use_case.QuoteUseCase
-import ir.bahmanghasemi.todayquote.domain.use_case.QuotesUseCase
+import ir.bahmanghasemi.todayquote.domain.use_case.author.AuthorUseCase
+import ir.bahmanghasemi.todayquote.domain.use_case.quote.DailyQuoteUseCase
+import ir.bahmanghasemi.todayquote.domain.use_case.quote.QuoteUseCase
+import ir.bahmanghasemi.todayquote.domain.use_case.quote.QuotesUseCase
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -58,5 +61,19 @@ object NetworkModule {
         )
     }
 
+    @Provides
+    fun provideAuthorApi(retrofit: Retrofit): AuthorApi {
+        return retrofit.create(AuthorApi::class.java)
+    }
+
+    @Provides
+    fun provideAuthorRepository(api: AuthorApi): AuthorRepository {
+        return AuthorRepositoryImpl(api)
+    }
+
+    @Provides
+    fun providesAuthorUseCase(repo: AuthorRepository): AuthorUseCase {
+        return AuthorUseCase(repo)
+    }
 
 }

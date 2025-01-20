@@ -34,6 +34,7 @@ import ir.bahmanghasemi.todayquote.common.presentation.util.Extension.Navigation
 import ir.bahmanghasemi.todayquote.common.presentation.util.DailyRoute
 import ir.bahmanghasemi.todayquote.common.presentation.util.FavoriteRoute
 import ir.bahmanghasemi.todayquote.common.presentation.util.NotificationRoute
+import ir.bahmanghasemi.todayquote.presentation.author.composable.AuthorsScreen
 import ir.bahmanghasemi.todayquote.presentation.daily_quote.QuoteViewModel
 import ir.bahmanghasemi.todayquote.presentation.daily_quote.composable.DailyQuoteScreen
 
@@ -143,7 +144,7 @@ private fun AppNavigation(paddingValues: PaddingValues, navController: NavHostCo
                 DailyQuoteScreen()
             }
             composable<AuthorRoute> {
-                // CategoryScreen
+                AuthorsScreen()
             }
             composable<FavoriteRoute> {
                 // ProfileScreen
