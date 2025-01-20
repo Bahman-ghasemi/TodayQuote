@@ -6,8 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.bahmanghasemi.todayquote.R
 import ir.bahmanghasemi.todayquote.common.data.util.Connectivity
-import ir.bahmanghasemi.todayquote.domain.use_case.DailyQuoteUseCase
-import ir.bahmanghasemi.todayquote.domain.use_case.QuoteUseCase
+import ir.bahmanghasemi.todayquote.domain.use_case.quote.QuoteUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

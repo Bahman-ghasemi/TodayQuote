@@ -1,4 +1,4 @@
-package ir.bahmanghasemi.todayquote.domain.use_case
+package ir.bahmanghasemi.todayquote.domain.use_case.quote
 
 import ir.bahmanghasemi.todayquote.domain.model.Quote
 import ir.bahmanghasemi.todayquote.domain.repository.QuoteRepository
