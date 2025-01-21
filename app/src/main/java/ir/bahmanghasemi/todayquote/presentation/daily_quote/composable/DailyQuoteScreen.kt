@@ -46,7 +46,6 @@ import ir.bahmanghasemi.todayquote.presentation.daily_quote.QuoteViewModel
 @Preview(showBackground = true, showSystemUi = true)
 fun DailyQuoteScreen(
     viewModel: QuoteViewModel = hiltViewModel<QuoteViewModel>(),
-    tintColor: Color = MaterialTheme.colorScheme.primary
 ) {
     val context = LocalContext.current
     val state by viewModel.quoteUiState.collectAsStateWithLifecycle()
@@ -70,7 +69,7 @@ fun DailyQuoteScreen(
             )
         }
 
-        VerticalDivider(thickness = 8.dp, color = tintColor)
+        VerticalDivider(thickness = 8.dp, color = MaterialTheme.colorScheme.primary)
 
         Column(modifier = Modifier.weight(1f)) {
             Row(
@@ -81,7 +80,7 @@ fun DailyQuoteScreen(
                 IconButton(modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(topStart = 0.dp, bottomStart = 0.dp, topEnd = 8.dp, bottomEnd = 8.dp))
-                    .background(tintColor),
+                    .background(MaterialTheme.colorScheme.primary),
                     onClick = {
                         viewModel.getRandomQuote()
                     }) {
