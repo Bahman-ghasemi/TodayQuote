@@ -30,8 +30,8 @@ class AuthorViewModel @Inject constructor(
                 try {
                     val response = useCase.invoke(query)
                     if (response.isSuccessful) {
-                        response.body()?.let { authors ->
-                            _uiState.update { AuthorUiState(authors = authors) }
+                        response.body()?.let { authorsResponse ->
+                            _uiState.update { AuthorUiState(authors = authorsResponse.results) }
                         }
                     } else {
                         _uiState.update { AuthorUiState(errorMessage = response.message()) }

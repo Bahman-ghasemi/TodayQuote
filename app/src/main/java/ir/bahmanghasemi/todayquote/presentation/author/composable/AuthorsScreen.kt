@@ -1,7 +1,6 @@
 package ir.bahmanghasemi.todayquote.presentation.author.composable
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,8 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import ir.bahmanghasemi.todayquote.R
 import ir.bahmanghasemi.todayquote.common.data.util.Shape
+import ir.bahmanghasemi.todayquote.common.presentation.util.Extension.shimmerEffect
 import ir.bahmanghasemi.todayquote.presentation.author.AuthorViewModel
 
 @Composable
@@ -55,7 +56,7 @@ fun AuthorsScreen(
         Modifier
             .fillMaxSize()
             .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Text(
             modifier = Modifier
@@ -103,12 +104,18 @@ fun AuthorsScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.Start)
                     ) {
-                        Box(modifier = Modifier.size(72.dp), contentAlignment = Alignment.Center) {
-                            Image(painter = painterResource(Shape.random()), contentDescription = "Shape")
+                        Box(contentAlignment = Alignment.Center) {
+                            AsyncImage(
+                                modifier = Modifier.size(96.dp)
+                                    .padding(top = 8.dp, end = 16.dp),
+                                model = Shape.random(),
+                                contentDescription = "Shape",
+                            )
                             Text(
+                                modifier = Modifier.padding(start = 8.dp, bottom = 16.dp),
                                 text = author.name.first().uppercase(),
                                 fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.headlineLarge
+                                style = MaterialTheme.typography.displayLarge
                             )
                         }
                         Text(modifier = Modifier.weight(1f), text = author.name)
