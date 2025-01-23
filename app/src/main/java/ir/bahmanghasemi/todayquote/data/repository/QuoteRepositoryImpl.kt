@@ -2,6 +2,7 @@ package ir.bahmanghasemi.todayquote.data.repository
 
 import ir.bahmanghasemi.todayquote.data.data_source.remote.QuoteApi
 import ir.bahmanghasemi.todayquote.domain.model.Quote
+import ir.bahmanghasemi.todayquote.domain.model.ResponseHandler
 import ir.bahmanghasemi.todayquote.domain.repository.QuoteRepository
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
@@ -18,7 +19,7 @@ class QuoteRepositoryImpl @Inject constructor(
         return api.getRandomQuote(filter)
     }
 
-    override suspend fun getQuotes(filter: Map<String, Any>): Response<List<Quote>> {
+    override suspend fun getQuotes(filter: Map<String, String>): Response<ResponseHandler<Quote>> {
         return api.getQuotes(filter)
     }
 
