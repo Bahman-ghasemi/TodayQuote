@@ -1,8 +1,14 @@
 package ir.bahmanghasemi.todayquote.presentation.daily_quote.composable
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -51,21 +57,23 @@ fun DailyQuoteScreen(
     val state by viewModel.quoteUiState.collectAsStateWithLifecycle()
 
     Row(modifier = Modifier.fillMaxSize()) {
-        Column(
+        Box(
             modifier = Modifier
                 .weight(0.15f)
                 .fillMaxHeight()
                 .background(MaterialTheme.colorScheme.tertiary)
                 .padding(top = 48.dp),
-            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top
+            contentAlignment = Alignment.TopCenter
         ) {
             Text(
                 modifier = Modifier
                     .rotateLayout(270f)
-                    .shimmerEffect(isLoading = state.isLoading),
+                    .shimmerEffect(isLoading = state.isLoading)
+                ,
                 text = state.quote?.author ?: "",
                 fontSize = 16.sp,
-                letterSpacing = TextUnit(2f, TextUnitType.Sp)
+                letterSpacing = TextUnit(2f, TextUnitType.Sp),
+                color = MaterialTheme.colorScheme.onTertiary
             )
         }
 
@@ -77,39 +85,57 @@ fun DailyQuoteScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                IconButton(modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(topStart = 0.dp, bottomStart = 0.dp, topEnd = 8.dp, bottomEnd = 8.dp))
-                    .background(MaterialTheme.colorScheme.primary),
-                    onClick = {
-                        viewModel.getRandomQuote()
-                    }) {
-                    when (state.isLoading) {
-                        true -> {
-                            CircularProgressIndicator(modifier = Modifier.size(32.dp), color = MaterialTheme.colorScheme.background)
-                        }
+                AnimatedVisibility(
+                    visible = !state.isLoading,
+                    enter = expandHorizontally() + slideInHorizontally(),
+                    exit = shrinkHorizontally() + slideOutHorizontally()
+                ) {
+                    IconButton(modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(topStart = 0.dp, bottomStart = 0.dp, topEnd = 8.dp, bottomEnd = 8.dp))
+                        .background(MaterialTheme.colorScheme.primary),
+                        onClick = {
+                            viewModel.getRandomQuote()
+                        }) {
+                        when (state.isLoading) {
+                            true -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(32.dp),
+                                    color = MaterialTheme.colorScheme.background
+                                )
+                            }
 
-                        false -> {
-                            Icon(
-                                modifier = Modifier.padding(4.dp),
-                                painter = painterResource(R.drawable.next),
-                                contentDescription = "Next",
-                                tint = MaterialTheme.colorScheme.background
-                            )
+                            false -> {
+                                Icon(
+                                    modifier = Modifier.padding(4.dp),
+                                    painter = painterResource(R.drawable.next),
+                                    contentDescription = "Next",
+                                    tint = MaterialTheme.colorScheme.background
+                                )
+                            }
                         }
                     }
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(modifier = Modifier.shimmerEffect(isLoading = state.isLoading), onClick = {
-                    // Todo: Implement Favorite Functionality
-                }) {
-                    Icon(painter = painterResource(R.drawable.heart), contentDescription = "Favorite")
-                }
-                IconButton(modifier = Modifier.shimmerEffect(isLoading = state.isLoading), onClick = {
-                    // Todo: Implement Share Functionality
-                }) {
-                    Icon(painter = painterResource(R.drawable.share), contentDescription = "Share")
+
+                AnimatedVisibility(
+                    visible = !state.isLoading,
+                    enter = expandHorizontally() + slideInHorizontally { fullWidth -> fullWidth },
+                    exit = shrinkHorizontally() + slideOutHorizontally { fullWidth -> fullWidth }
+                ) {
+                    Row {
+                        IconButton(onClick = {
+                            // Todo: Implement Favorite Functionality
+                        }) {
+                            Icon(painter = painterResource(R.drawable.heart), contentDescription = "Favorite")
+                        }
+                        IconButton(onClick = {
+                            // Todo: Implement Share Functionality
+                        }) {
+                            Icon(painter = painterResource(R.drawable.share), contentDescription = "Share")
+                        }
+                    }
                 }
             }
 
@@ -135,7 +161,7 @@ fun DailyQuoteScreen(
                 Text(
                     modifier = Modifier.shimmerEffect(isLoading = state.isLoading),
                     text = description ?: "",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.outline
                 )
             }

@@ -1,6 +1,7 @@
 package ir.bahmanghasemi.todayquote.data.data_source.remote
 
 import ir.bahmanghasemi.todayquote.domain.model.Quote
+import ir.bahmanghasemi.todayquote.domain.model.ResponseHandler
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import retrofit2.http.GET
@@ -11,7 +12,7 @@ interface QuoteApi {
     @GET("random")
     suspend fun getRandomQuote(@QueryMap filter: Map<String, Int> = emptyMap()): Response<Quote>
 
-    @GET("quotes/random")
-    suspend fun getQuotes(@QueryMap filter: Map<String, Any>?): Response<List<Quote>>
+    @GET("quotes")
+    suspend fun getQuotes(@QueryMap filter: Map<String, String> = emptyMap()): Response<ResponseHandler<Quote>>
 
 }

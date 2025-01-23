@@ -23,6 +23,9 @@ class QuoteViewModel @Inject constructor(
     private val _quoteUiState = MutableStateFlow(QuoteUiState())
     val quoteUiState = _quoteUiState.asStateFlow()
 
+    private val _quotesUiState = MutableStateFlow(QuotesUiState())
+    val quotesUiState = _quotesUiState.asStateFlow()
+
     fun getRandomQuote() {
         _quoteUiState.update { QuoteUiState(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
@@ -44,6 +47,32 @@ class QuoteViewModel @Inject constructor(
 
             } else {
                 _quoteUiState.update { QuoteUiState(errorMessage = application.applicationContext.getString(R.string.networkNotAvailable)) }
+                print("error-log-> no internet connection!")
+            }
+        }
+    }
+
+    fun getAuthorQuotes(authorSlug: String) {
+        _quotesUiState.update { QuotesUiState(isLoading = true) }
+        viewModelScope.launch(Dispatchers.IO) {
+            if (Connectivity.isNetworkAvailable(application.applicationContext)) {
+                try {
+                    val response = quoteUseCase.quotesUseCase.invoke(mapOf("author" to authorSlug))
+                    if (response.isSuccessful) {
+                        response.body()?.let { quotesResponse ->
+                            _quotesUiState.update { QuotesUiState(quotes = quotesResponse.results) }
+                        }
+                    } else {
+                        _quotesUiState.update { QuotesUiState(errorMessage = response.message()) }
+                        print("error-log-> ${response.message()}")
+                    }
+                } catch (ex: Exception) {
+                    _quotesUiState.update { QuotesUiState(errorMessage = ex.localizedMessage) }
+                    print("error-log-> ${ex.localizedMessage}")
+                }
+
+            } else {
+                _quotesUiState.update { QuotesUiState(errorMessage = application.applicationContext.getString(R.string.networkNotAvailable)) }
                 print("error-log-> no internet connection!")
             }
         }
