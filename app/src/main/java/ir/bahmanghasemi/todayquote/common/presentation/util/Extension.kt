@@ -1,12 +1,16 @@
 package ir.bahmanghasemi.todayquote.common.presentation.util
 
 import android.graphics.BlurMaskFilter
+import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.RowScope
@@ -15,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -102,37 +107,30 @@ object Extension {
 
     @Composable
     fun RowScope.NavigationBarItem(
-        selectedIcon: Int,
         selected: Boolean,
-        unselectedIcon: Int,
+        @DrawableRes selectedIcon: Int,
+        @DrawableRes unselectedIcon: Int,
         label: String,
         onclick: () -> Unit
     ) {
-        val itemColor = NavigationBarItemColors(
-            selectedIconColor = MaterialTheme.colorScheme.primary,
-            selectedTextColor = MaterialTheme.colorScheme.primary,
-            selectedIndicatorColor = Color.Transparent,
-            unselectedIconColor = MaterialTheme.colorScheme.onSurface,
-            unselectedTextColor = MaterialTheme.colorScheme.onSurface,
-            disabledIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
-            disabledTextColor = MaterialTheme.colorScheme.onTertiaryContainer
-        )
 
         NavigationBarItem(
             selected = selected,
             onClick = onclick,
             icon = {
                 Icon(
+                    modifier = Modifier.size(24.dp),
                     painter = painterResource(if (selected) selectedIcon else unselectedIcon),
                     contentDescription = "Daily Quote",
-                    modifier = Modifier.size(24.dp)
+                    tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
                 )
             },
             label = {
-                if (selected)
-                    Text(text = label)
+                AnimatedVisibility(selected) {
+                    Text(text = label, color = MaterialTheme.colorScheme.primary)
+                }
             },
-            colors = itemColor
+            colors = NavigationBarItemDefaults.colors(indicatorColor = Color.Transparent)
         )
     }
 
@@ -155,8 +153,7 @@ object Extension {
     ): Modifier {
         if (!isLoading) { // <-- Step 1.
             return this
-        }
-        else {
+        } else {
             return composed {
 
                 // Step 2.

@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.bahmanghasemi.todayquote.common.data.util.Connectivity
-import ir.bahmanghasemi.todayquote.common.presentation.util.Extension
+import ir.bahmanghasemi.todayquote.common.data.util.Shape
 import ir.bahmanghasemi.todayquote.domain.use_case.author.AuthorUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +31,14 @@ class AuthorViewModel @Inject constructor(
                     val response = useCase.invoke(query)
                     if (response.isSuccessful) {
                         response.body()?.let { authorsResponse ->
-                            _uiState.update { AuthorUiState(authors = authorsResponse.results) }
+                            val authors = authorsResponse.results.mapIndexed { index, author ->
+                                val idx = when (index) {
+                                    in 0..19 -> index
+                                    else -> index % 20
+                                }
+                                author.copy(shape = Shape.shapes()[idx])
+                            }
+                            _uiState.update { AuthorUiState(authors = authors) }
                         }
                     } else {
                         _uiState.update { AuthorUiState(errorMessage = response.message()) }
