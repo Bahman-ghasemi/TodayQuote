@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ir.bahmanghasemi.todayquote.common.data.data_source.remote.ssl_unsafe.BypassSsl
 import ir.bahmanghasemi.todayquote.common.data.util.Const
 import ir.bahmanghasemi.todayquote.data.data_source.remote.AuthorApi
 import ir.bahmanghasemi.todayquote.data.data_source.remote.QuoteApi
@@ -25,8 +26,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 object NetworkModule {
 
     @Provides
-    fun provideOkHttpClient(): OkHttpClient {
-        val client = OkHttpClient.Builder()
+    fun provideOkHttpClient(bypassSsl: BypassSsl): OkHttpClient {
+        val client = bypassSsl.getUnsafeOkHttpClient().newBuilder()
         val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         client.addInterceptor(logging)
         return client.build()
@@ -37,7 +38,7 @@ object NetworkModule {
         client: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(Const.MOCK_URL)
+            .baseUrl(Const.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()

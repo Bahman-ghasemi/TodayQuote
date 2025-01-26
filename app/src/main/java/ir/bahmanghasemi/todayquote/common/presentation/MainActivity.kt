@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,23 +22,28 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
 import ir.bahmanghasemi.todayquote.R
 import ir.bahmanghasemi.todayquote.common.presentation.ui.theme.TodayQuoteTheme
-import ir.bahmanghasemi.todayquote.common.presentation.util.AuthorRoute
+import ir.bahmanghasemi.todayquote.common.presentation.util.AuthorNavType
 import ir.bahmanghasemi.todayquote.common.presentation.util.Extension.NavigationBarItem
-import ir.bahmanghasemi.todayquote.common.presentation.util.DailyRoute
-import ir.bahmanghasemi.todayquote.common.presentation.util.FavoriteRoute
-import ir.bahmanghasemi.todayquote.common.presentation.util.NotificationRoute
+import ir.bahmanghasemi.todayquote.common.presentation.util.navigation.AuthorDetailRoute
+import ir.bahmanghasemi.todayquote.common.presentation.util.navigation.AuthorRoute
+import ir.bahmanghasemi.todayquote.common.presentation.util.navigation.DailyRoute
+import ir.bahmanghasemi.todayquote.common.presentation.util.navigation.FavoriteRoute
+import ir.bahmanghasemi.todayquote.common.presentation.util.navigation.NotificationRoute
+import ir.bahmanghasemi.todayquote.domain.model.Author
+import ir.bahmanghasemi.todayquote.presentation.author.AuthorViewModel
+import ir.bahmanghasemi.todayquote.presentation.author.composable.AuthorScreen
 import ir.bahmanghasemi.todayquote.presentation.author.composable.AuthorsScreen
-import ir.bahmanghasemi.todayquote.presentation.daily_quote.QuoteViewModel
 import ir.bahmanghasemi.todayquote.presentation.daily_quote.composable.DailyQuoteScreen
+import kotlin.reflect.typeOf
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -132,6 +139,7 @@ private fun BottomNavMenu(navController: NavHostController = rememberNavControll
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun AppNavigation(paddingValues: PaddingValues, navController: NavHostController) {
     Column(
@@ -139,18 +147,40 @@ private fun AppNavigation(paddingValues: PaddingValues, navController: NavHostCo
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        NavHost(navController = navController, startDestination = DailyRoute) {
-            composable<DailyRoute> {
-                DailyQuoteScreen()
-            }
-            composable<AuthorRoute> {
-                AuthorsScreen()
-            }
-            composable<FavoriteRoute> {
-                // ProfileScreen
-            }
-            composable<NotificationRoute> {
-                // Notification Setting Screen
+        SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {
+            NavHost(navController = navController, startDestination = DailyRoute) {
+
+                composable<DailyRoute> {
+                    DailyQuoteScreen()
+                }
+
+                composable<AuthorRoute> {
+                    AuthorsScreen(
+                        animatedVisibilityScope = this
+                    ) { author ->
+                        navController.navigate(AuthorDetailRoute(author))
+                    }
+                }
+
+                composable<AuthorDetailRoute>(
+                    typeMap = mapOf(
+                        typeOf<Author>() to AuthorNavType.AuthorType
+                    )
+                ) {
+//                    val authorViewModel = hiltViewModel<AuthorViewModel>()
+//                    val quoteViewModel = hiltViewModel<QuoteViewModel>()
+                    val args = it.toRoute<AuthorDetailRoute>()
+                    AuthorScreen(animatedVisibilityScope = this, author = args.author) {
+                        navController.popBackStack()
+                    }
+                }
+
+                composable<FavoriteRoute> {
+                    // ProfileScreen
+                }
+                composable<NotificationRoute> {
+                    // Notification Setting Screen
+                }
             }
         }
     }
