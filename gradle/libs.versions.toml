@@ -17,11 +17,15 @@ coroutineVersion = "1.10.1"
 hiltAndroid = "2.55"
 hiltNavigationCompose = "1.2.0"
 roomRuntime = "2.6.1"
+securityCryptoKtx = "1.1.0-alpha06"
 retrofit = "2.11.0"
 loggingInterceptor = "4.12.0"
 coilCompose = "3.0.4"
 navigationCompose = "2.8.5"
 kotlinxSerializationJson = "1.8.0"
+accompanistSystemuicontroller = "0.27.0"
+accompanistPermissions = "0.31.1-alpha"
+desugar_jdk_libsVersion = "2.1.4"
 truthVersion = "1.4.4"
 
 [libraries]
@@ -61,6 +65,9 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 
+# Encrypted Preferences
+encrypted-preferences = { module = "androidx.security:security-crypto-ktx", version.ref = "securityCryptoKtx" }
+
 # Retrofit
 retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
@@ -75,6 +82,13 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 
 # Serialization
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
+# Permission Handler
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
+
+# DateTime
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libsVersion" }
 
 # Truth
 truth = { module = "com.google.truth:truth", version.ref = "truthVersion" }

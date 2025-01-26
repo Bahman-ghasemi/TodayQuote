@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,7 +26,9 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,9 +44,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ir.bahmanghasemi.todayquote.R
-import ir.bahmanghasemi.todayquote.common.presentation.util.Extension.getTitle
-import ir.bahmanghasemi.todayquote.common.presentation.util.Extension.rotateLayout
-import ir.bahmanghasemi.todayquote.common.presentation.util.Extension.shimmerEffect
+import ir.bahmanghasemi.todayquote.common.presentation.util.UIExtension.getTitle
+import ir.bahmanghasemi.todayquote.common.presentation.util.UIExtension.rotateLayout
+import ir.bahmanghasemi.todayquote.common.presentation.util.UIExtension.shimmerEffect
 import ir.bahmanghasemi.todayquote.presentation.daily_quote.QuoteViewModel
 
 @Composable
@@ -55,6 +56,11 @@ fun DailyQuoteScreen(
 ) {
     val context = LocalContext.current
     val state by viewModel.quoteUiState.collectAsStateWithLifecycle()
+    val showOperations by remember {
+        derivedStateOf {
+            state.quote != null
+        }
+    }
 
     Row(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -68,8 +74,7 @@ fun DailyQuoteScreen(
             Text(
                 modifier = Modifier
                     .rotateLayout(270f)
-                    .shimmerEffect(isLoading = state.isLoading)
-                ,
+                    .shimmerEffect(isLoading = state.isLoading),
                 text = state.quote?.author ?: "",
                 fontSize = 16.sp,
                 letterSpacing = TextUnit(2f, TextUnitType.Sp),
@@ -86,7 +91,7 @@ fun DailyQuoteScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 AnimatedVisibility(
-                    visible = !state.isLoading,
+                    visible = showOperations,
                     enter = expandHorizontally() + slideInHorizontally(),
                     exit = shrinkHorizontally() + slideOutHorizontally()
                 ) {
@@ -97,30 +102,20 @@ fun DailyQuoteScreen(
                         onClick = {
                             viewModel.getRandomQuote()
                         }) {
-                        when (state.isLoading) {
-                            true -> {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(32.dp),
-                                    color = MaterialTheme.colorScheme.background
-                                )
-                            }
 
-                            false -> {
-                                Icon(
-                                    modifier = Modifier.padding(4.dp),
-                                    painter = painterResource(R.drawable.next),
-                                    contentDescription = "Next",
-                                    tint = MaterialTheme.colorScheme.background
-                                )
-                            }
-                        }
+                        Icon(
+                            modifier = Modifier.padding(4.dp),
+                            painter = painterResource(R.drawable.next),
+                            contentDescription = "Next",
+                            tint = MaterialTheme.colorScheme.background
+                        )
                     }
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
 
                 AnimatedVisibility(
-                    visible = !state.isLoading,
+                    visible = showOperations,
                     enter = expandHorizontally() + slideInHorizontally { fullWidth -> fullWidth },
                     exit = shrinkHorizontally() + slideOutHorizontally { fullWidth -> fullWidth }
                 ) {
