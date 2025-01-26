@@ -54,7 +54,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import ir.bahmanghasemi.todayquote.R
-import ir.bahmanghasemi.todayquote.common.data.util.Shape
 import ir.bahmanghasemi.todayquote.domain.model.Author
 import ir.bahmanghasemi.todayquote.presentation.author.AuthorViewModel
 
