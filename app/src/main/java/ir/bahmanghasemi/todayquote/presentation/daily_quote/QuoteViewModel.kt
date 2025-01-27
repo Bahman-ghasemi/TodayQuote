@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.time.delay
+import java.time.Duration
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,16 +40,13 @@ class QuoteViewModel @Inject constructor(
                         }
                     } else {
                         _quoteUiState.update { QuoteUiState(errorMessage = response.message()) }
-                        print("error-log-> ${response.message()}")
                     }
                 } catch (ex: Exception) {
                     _quoteUiState.update { QuoteUiState(errorMessage = ex.localizedMessage) }
-                    print("error-log-> ${ex.localizedMessage}")
                 }
 
             } else {
                 _quoteUiState.update { QuoteUiState(errorMessage = application.applicationContext.getString(R.string.networkNotAvailable)) }
-                print("error-log-> no internet connection!")
             }
         }
     }
