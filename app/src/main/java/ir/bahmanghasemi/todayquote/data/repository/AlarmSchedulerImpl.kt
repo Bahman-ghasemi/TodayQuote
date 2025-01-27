@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import ir.bahmanghasemi.todayquote.common.data.broadcast.AlarmReceiver
+import ir.bahmanghasemi.todayquote.common.data.util.Const
 import ir.bahmanghasemi.todayquote.domain.model.AlarmItem
 import ir.bahmanghasemi.todayquote.domain.repository.AlarmScheduler
 import java.time.ZoneId
@@ -38,7 +39,7 @@ class AlarmSchedulerImpl(
                 alarmItem.dateTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
                 PendingIntent.getBroadcast(
                     context,
-                    0x01010998,
+                    Const.ALARM_ID,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
@@ -50,7 +51,7 @@ class AlarmSchedulerImpl(
         alarmManager.cancel(
             PendingIntent.getBroadcast(
                 context,
-                0x01010998,
+                Const.ALARM_ID,
                 Intent(context, AlarmReceiver::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
