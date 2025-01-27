@@ -1,11 +1,13 @@
-package ir.bahmanghasemi.todayquote.domain.model
+package ir.bahmanghasemi.todayquote.data.data_source.remote.dto
 
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @SerialName("author")
 @Serializable
-data class Author(
+data class AuthorDto(
+    @SerializedName("_id")
     val id: String,
     val bio: String,
     val shape: Int = 0,
