@@ -30,16 +30,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ir.bahmanghasemi.todayquote.common.data.data_source.pref.encryptedPreferences
 import ir.bahmanghasemi.todayquote.common.data.util.Const
+import ir.bahmanghasemi.todayquote.common.presentation.component.TimeType
 import ir.bahmanghasemi.todayquote.common.presentation.component.VerticalTime
 import ir.bahmanghasemi.todayquote.data.repository.AlarmSchedulerImpl
 import ir.bahmanghasemi.todayquote.domain.model.AlarmItem
-import ir.bahmanghasemi.todayquote.common.presentation.component.TimeType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZonedDateTime
 
 @Composable
 fun NotificationScreen() {
@@ -48,8 +47,8 @@ fun NotificationScreen() {
     val alarmScheduler = AlarmSchedulerImpl(context)
 
     var isChecked by remember { mutableStateOf(context.encryptedPreferences().get(Const.DAILY_NOTIFICATION_ENABLED, false)) }
-    var selectedHour by remember { mutableIntStateOf(context.encryptedPreferences().get(Const.DAILY_NOTIFICATION_HOUR, ZonedDateTime.now().hour)) }
-    var selectedMinute by remember { mutableIntStateOf(context.encryptedPreferences().get(Const.DAILY_NOTIFICATION_MINUTE, ZonedDateTime.now().minute)) }
+    var selectedHour by remember { mutableIntStateOf(context.encryptedPreferences().get(Const.DAILY_NOTIFICATION_HOUR, 0)) }
+    var selectedMinute by remember { mutableIntStateOf(context.encryptedPreferences().get(Const.DAILY_NOTIFICATION_MINUTE, 0)) }
 
     Column(
         Modifier
@@ -121,7 +120,7 @@ fun NotificationScreen() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(space = 8.dp, alignment = Alignment.CenterHorizontally)
         ) {
-            VerticalTime(type = TimeType.HOUR, enabled = isChecked) {
+            VerticalTime(type = TimeType.HOUR, initialTime = selectedHour, enabled = isChecked) {
                 selectedHour = it
             }
 
@@ -131,7 +130,7 @@ fun NotificationScreen() {
                 color = if (isChecked) LocalContentColor.current else IconButtonDefaults.iconButtonColors().disabledContentColor
             )
 
-            VerticalTime(type = TimeType.MINUTE, enabled = isChecked) {
+            VerticalTime(type = TimeType.MINUTE, initialTime = selectedMinute, enabled = isChecked) {
                 selectedMinute = it
             }
         }
@@ -149,6 +148,9 @@ fun NotificationScreen() {
                 dateTime = dateTime,
                 message = "Click for showing today quote..."
             )
+
+            println("selectedTime: $time")
+            println("alarmItem: $alarmItem")
 
             if (isChecked) {
                 context.encryptedPreferences().put(Const.DAILY_NOTIFICATION_ENABLED, isChecked)

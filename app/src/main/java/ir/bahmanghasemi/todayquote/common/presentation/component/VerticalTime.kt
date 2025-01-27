@@ -26,18 +26,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ir.bahmanghasemi.todayquote.R
 import ir.bahmanghasemi.todayquote.common.presentation.util.Extension.in24Hour
+import ir.bahmanghasemi.todayquote.common.presentation.util.Extension.min
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
+import java.time.LocalTime
 import java.time.ZonedDateTime
 
 @Composable
 @Preview(showBackground = true)
-fun VerticalTime(type: TimeType = TimeType.HOUR, enabled: Boolean = true, onTimeChanged: (Int) -> Unit = {}) {
+fun VerticalTime(type: TimeType = TimeType.HOUR, initialTime: Int = 0, enabled: Boolean = true, onTimeChanged: (Int) -> Unit = {}) {
     val scope = rememberCoroutineScope()
     var isPressed by remember { mutableStateOf(false) }
 
-    var selectedTime by remember { mutableIntStateOf(if (type == TimeType.HOUR) ZonedDateTime.now().hour else ZonedDateTime.now().minute) }
     val maxValue = if (type == TimeType.HOUR) 23 else 59
+
+    var selectedTime by remember {
+        mutableIntStateOf(
+            if (type == TimeType.HOUR)
+                LocalTime.of(initialTime.min(maxValue), initialTime.min(59)).hour
+            else
+                LocalTime.of(initialTime.min(23), initialTime.min(maxValue)).minute
+        )
+    }
 
     val isUpEnabled by remember(selectedTime, maxValue) {
         derivedStateOf {

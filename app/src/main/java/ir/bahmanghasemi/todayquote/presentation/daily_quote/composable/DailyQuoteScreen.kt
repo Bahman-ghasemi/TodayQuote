@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -75,7 +76,7 @@ fun DailyQuoteScreen(
                 modifier = Modifier
                     .rotateLayout(270f)
                     .shimmerEffect(isLoading = state.isLoading),
-                text = state.quote?.author ?: "",
+                text = state.quote?.author ?: "                 ",
                 fontSize = 16.sp,
                 letterSpacing = TextUnit(2f, TextUnitType.Sp),
                 color = MaterialTheme.colorScheme.onTertiary
@@ -147,14 +148,14 @@ fun DailyQuoteScreen(
                 }
                 val description = words?.drop(3)?.joinToString(" ")
                 Text(
-                    modifier = Modifier.shimmerEffect(isLoading = state.isLoading),
+                    modifier = Modifier.fillMaxWidth().shimmerEffect(isLoading = state.isLoading),
                     text = title?.uppercase() ?: "",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
                 Text(
-                    modifier = Modifier.shimmerEffect(isLoading = state.isLoading),
+                    modifier = Modifier.fillMaxWidth().shimmerEffect(isLoading = state.isLoading),
                     text = description ?: "",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.outline
@@ -166,6 +167,7 @@ fun DailyQuoteScreen(
     LaunchedEffect(true) {
         viewModel.getRandomQuote()
     }
+
     SideEffect {
         state.errorMessage?.let {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
