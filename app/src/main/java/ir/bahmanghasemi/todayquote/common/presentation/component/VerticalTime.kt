@@ -1,4 +1,4 @@
-package ir.bahmanghasemi.todayquote.presentation.notification.composable
+package ir.bahmanghasemi.todayquote.common.presentation.component
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
@@ -40,7 +40,9 @@ fun VerticalTime(type: TimeType = TimeType.HOUR, enabled: Boolean = true, onTime
     val maxValue = if (type == TimeType.HOUR) 23 else 59
 
     val isUpEnabled by remember(selectedTime, maxValue) {
-        derivedStateOf { selectedTime < maxValue }
+        derivedStateOf {
+            selectedTime < maxValue
+        }
     }
     val isDownEnabled by remember(selectedTime) {
         derivedStateOf { selectedTime > 0 }

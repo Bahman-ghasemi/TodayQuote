@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,20 +26,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ir.bahmanghasemi.todayquote.common.data.data_source.pref.encryptedPreferences
 import ir.bahmanghasemi.todayquote.common.data.util.Const
+import ir.bahmanghasemi.todayquote.common.presentation.component.VerticalTime
+import ir.bahmanghasemi.todayquote.data.repository.AlarmSchedulerImpl
+import ir.bahmanghasemi.todayquote.domain.model.AlarmItem
+import ir.bahmanghasemi.todayquote.common.presentation.component.TimeType
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZonedDateTime
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
 fun NotificationScreen() {
     val context = LocalContext.current
-    var isChecked by remember { mutableStateOf(false) }
-    var selectedHour by remember { mutableIntStateOf(ZonedDateTime.now().hour) }
-    var selectedMinute by remember { mutableIntStateOf(ZonedDateTime.now().minute) }
+    val scope = rememberCoroutineScope()
+    val alarmScheduler = AlarmSchedulerImpl(context)
+
+    var isChecked by remember { mutableStateOf(context.encryptedPreferences().get(Const.DAILY_NOTIFICATION_ENABLED, false)) }
+    var selectedHour by remember { mutableIntStateOf(context.encryptedPreferences().get(Const.DAILY_NOTIFICATION_HOUR, ZonedDateTime.now().hour)) }
+    var selectedMinute by remember { mutableIntStateOf(context.encryptedPreferences().get(Const.DAILY_NOTIFICATION_MINUTE, ZonedDateTime.now().minute)) }
 
     Column(
         Modifier
@@ -76,7 +87,9 @@ fun NotificationScreen() {
                 modifier = Modifier
                     .padding(horizontal = 2.dp),
                 checked = isChecked,
-                onCheckedChange = { isChecked = it },
+                onCheckedChange = {
+                    isChecked = it
+                },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.background,
                     checkedIconColor = MaterialTheme.colorScheme.primary,
@@ -125,12 +138,27 @@ fun NotificationScreen() {
 
     }
 
-    LaunchedEffect(key1 = isChecked, key2 = selectedHour, key3 = selectedMinute) {
-        if (isChecked){
-            context.encryptedPreferences().put(Const.DAILY_NOTIFICATION_ENABLED, isChecked)
-            context.encryptedPreferences().put(Const.DAILY_NOTIFICATION_ENABLED, isChecked)
-            context.encryptedPreferences().put(Const.DAILY_NOTIFICATION_ENABLED, isChecked)
+    LaunchedEffect(isChecked, selectedHour, selectedMinute) {
+        scope.launch {
+            delay(3000)
+            val date = LocalDate.now()
+            val time = LocalTime.of(selectedHour, selectedMinute)
+            val dateTime = LocalDateTime.of(date, time)
 
+            val alarmItem = AlarmItem(
+                dateTime = dateTime,
+                message = "Click for showing today quote..."
+            )
+
+            if (isChecked) {
+                context.encryptedPreferences().put(Const.DAILY_NOTIFICATION_ENABLED, isChecked)
+                context.encryptedPreferences().put(Const.DAILY_NOTIFICATION_HOUR, selectedHour)
+                context.encryptedPreferences().put(Const.DAILY_NOTIFICATION_MINUTE, selectedMinute)
+                alarmScheduler.schedule(alarmItem)
+            } else {
+                context.encryptedPreferences().clear()
+                alarmScheduler.cancel(alarmItem)
+            }
         }
     }
 }
