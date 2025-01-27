@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import ir.bahmanghasemi.todayquote.R
+import ir.bahmanghasemi.todayquote.common.presentation.util.UIExtension.shimmerEffect
 import ir.bahmanghasemi.todayquote.domain.model.Author
 import ir.bahmanghasemi.todayquote.presentation.author.AuthorViewModel
 
@@ -67,7 +68,7 @@ fun SharedTransitionScope.AuthorsScreen(
     val context = LocalContext.current
     val state by viewModel.uiState.collectAsState()
     val lazyListState = rememberLazyListState()
-    val isExpanding by remember  {
+    val isExpanding by remember {
         derivedStateOf {
             lazyListState.firstVisibleItemIndex < 3
         }
@@ -143,53 +144,14 @@ fun SharedTransitionScope.AuthorsScreen(
                 .fillMaxWidth(),
             state = lazyListState
         ) {
-            state.authors?.let { authors ->
-                itemsIndexed(authors, key = { _, item -> item.id }) { index, author ->
-//                    val idx = if (index > 0) index % 20 else index
-//                    val shape = Shape.shapes()[idx]
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                onItemSelected(author)
-                            }
-                            .padding(horizontal = 32.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.Start)
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            AsyncImage(
-                                modifier = Modifier
-                                    .size(96.dp)
-                                    .padding(top = 8.dp, end = 16.dp)
-                                    .sharedElement(
-                                        state = rememberSharedContentState(key = "shape${author.id}"),
-                                        animatedVisibilityScope = animatedVisibilityScope
-                                    ),
-                                model = author.shape,
-                                contentDescription = "Shape",
-                            )
-                            Text(
-                                modifier = Modifier
-                                    .padding(start = 8.dp, bottom = 16.dp)
-                                    .sharedElement(
-                                        state = rememberSharedContentState(key = "firstWord${author.id}"),
-                                        animatedVisibilityScope = animatedVisibilityScope
-                                    ),
-                                text = author.name.first().uppercase(),
-                                fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.displayLarge
-                            )
-                        }
-                        Text(
-                            modifier = Modifier
-                                .weight(1f)
-                                .sharedElement(
-                                    state = rememberSharedContentState(key = "name${author.id}"),
-                                    animatedVisibilityScope = animatedVisibilityScope
-                                ),
-                            text = author.name
-                        )
+            if (state.isLoading) {
+                items(8) {
+                    AuthorListItem(null, animatedVisibilityScope, onItemSelected)
+                }
+            } else {
+                state.authors?.let { authors ->
+                    itemsIndexed(authors, key = { _, item -> item.id }) { index, author ->
+                        AuthorListItem(author, animatedVisibilityScope, onItemSelected)
                     }
                 }
             }
@@ -207,3 +169,58 @@ fun SharedTransitionScope.AuthorsScreen(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun SharedTransitionScope.AuthorListItem(
+    author: Author?,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    onItemSelected: (author: Author) -> Unit
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clickable {
+                author?.let(onItemSelected)
+            }
+            .padding(horizontal = 32.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.Start)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            AsyncImage(
+                modifier = Modifier
+                    .size(96.dp)
+                    .padding(top = 8.dp, end = 16.dp)
+                    .shimmerEffect(author == null)
+                    .sharedElement(
+                        state = rememberSharedContentState(key = "shape${author?.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    ),
+                model = author?.shape,
+                contentDescription = "Shape",
+            )
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp, bottom = 16.dp)
+                    .shimmerEffect(author == null)
+                    .sharedElement(
+                        state = rememberSharedContentState(key = "firstWord${author?.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    ),
+                text = author?.name?.first()?.uppercase() ?: "",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.displayLarge
+            )
+        }
+        Text(
+            modifier = Modifier
+                .weight(1f)
+                .shimmerEffect(author == null)
+                .sharedElement(
+                    state = rememberSharedContentState(key = "name${author?.id}"),
+                    animatedVisibilityScope = animatedVisibilityScope
+                ),
+            text = author?.name ?: ""
+        )
+    }
+}

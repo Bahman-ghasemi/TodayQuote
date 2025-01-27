@@ -88,10 +88,11 @@ private fun BottomNavMenu(navController: NavHostController = rememberNavControll
                 unselectedIcon = R.drawable.quote,
                 label = "Daily Quote",
                 onclick = {
-                    navController.navigate(DailyRoute) {
-                        popUpTo<DailyRoute>()
-                        launchSingleTop = true
-                    }
+                    if (currentDestination != DailyRoute.serializer().descriptor.serialName)
+                        navController.navigate(DailyRoute) {
+                            popUpTo<DailyRoute>()
+                            launchSingleTop = true
+                        }
                 }
             )
 
@@ -101,10 +102,11 @@ private fun BottomNavMenu(navController: NavHostController = rememberNavControll
                 unselectedIcon = R.drawable.document,
                 label = "Authors",
                 onclick = {
-                    navController.navigate(AuthorRoute) {
-                        popUpTo<DailyRoute>()
-                        launchSingleTop = true
-                    }
+                    if (currentDestination != AuthorRoute.serializer().descriptor.serialName)
+                        navController.navigate(AuthorRoute) {
+                            popUpTo<DailyRoute>()
+                            launchSingleTop = true
+                        }
                 }
             )
 
@@ -114,10 +116,11 @@ private fun BottomNavMenu(navController: NavHostController = rememberNavControll
                 unselectedIcon = R.drawable.heart,
                 label = "Favorites",
                 onclick = {
-                    navController.navigate(FavoriteRoute) {
-                        popUpTo<DailyRoute>()
-                        launchSingleTop = true
-                    }
+                    if (currentDestination != FavoriteRoute.serializer().descriptor.serialName)
+                        navController.navigate(FavoriteRoute) {
+                            popUpTo<DailyRoute>()
+                            launchSingleTop = true
+                        }
                 }
             )
 
@@ -127,10 +130,11 @@ private fun BottomNavMenu(navController: NavHostController = rememberNavControll
                 unselectedIcon = R.drawable.notification,
                 label = "Notification",
                 onclick = {
-                    navController.navigate(NotificationRoute) {
-                        popUpTo<DailyRoute>()
-                        launchSingleTop = true
-                    }
+                    if (currentDestination != NotificationRoute.serializer().descriptor.serialName)
+                        navController.navigate(NotificationRoute) {
+                            popUpTo<DailyRoute>()
+                            launchSingleTop = true
+                        }
                 }
             )
 
