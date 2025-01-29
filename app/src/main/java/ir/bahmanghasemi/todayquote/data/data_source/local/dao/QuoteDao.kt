@@ -12,15 +12,15 @@ import kotlinx.coroutines.flow.Flow
 interface QuoteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(quote: QuoteEntity)
+    suspend fun insert(quote: QuoteEntity): Long
 
     @Delete
-    suspend fun delete(quote: QuoteEntity)
+    suspend fun delete(quote: QuoteEntity): Int
 
     @Query("SELECT * FROM Quote")
-    fun getFavorites(): Flow<List<QuoteEntity>>
+    fun favoriteQuotes(): Flow<List<QuoteEntity>>
 
-    @Query("SELECT * FROM Quote WHERE id = :id")
-    fun getFavorite(id: Int)
+    @Query("SELECT EXISTS(SELECT * FROM Quote WHERE id = :uid)")
+    suspend fun isFavorite(uid: String): Boolean
 
 }

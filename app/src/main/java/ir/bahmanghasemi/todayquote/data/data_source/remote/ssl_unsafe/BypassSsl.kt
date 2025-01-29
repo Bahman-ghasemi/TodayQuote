@@ -1,4 +1,4 @@
-package ir.bahmanghasemi.todayquote.common.data.data_source.remote.ssl_unsafe
+package ir.bahmanghasemi.todayquote.data.data_source.remote.ssl_unsafe
 
 import okhttp3.OkHttpClient
 import java.security.SecureRandom
