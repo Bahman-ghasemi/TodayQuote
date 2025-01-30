@@ -93,10 +93,10 @@ fun SharedTransitionScope.AuthorsScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 64.dp, end = 64.dp, top = 24.dp),
+                    .padding(start = 48.dp, end = 64.dp, top = 24.dp),
                 text = "Popular Authors",
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
+                style = MaterialTheme.typography.headlineSmall,
                 color = Color.Black
             )
         }

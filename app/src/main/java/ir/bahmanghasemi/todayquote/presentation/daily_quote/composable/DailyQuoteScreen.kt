@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -101,7 +100,7 @@ fun DailyQuoteScreen(
                         .clip(RoundedCornerShape(topStart = 0.dp, bottomStart = 0.dp, topEnd = 8.dp, bottomEnd = 8.dp))
                         .background(MaterialTheme.colorScheme.primary),
                         onClick = {
-                            viewModel.getRandomQuote()
+                            viewModel.fetchRandomQuote()
                         }) {
 
                         Icon(
@@ -122,9 +121,21 @@ fun DailyQuoteScreen(
                 ) {
                     Row {
                         IconButton(onClick = {
-                            // Todo: Implement Favorite Functionality
+                            state.quote?.let {
+                                when (it.isFavorite) {
+                                    true -> {
+                                        viewModel.makeUnFavorite(it)
+                                    }
+                                    false -> {
+                                        viewModel.makeFavorite(it)
+                                    }
+                                }
+                            }
                         }) {
-                            Icon(painter = painterResource(R.drawable.heart), contentDescription = "Favorite")
+                            Icon(
+                                painter = painterResource(if (state.quote?.isFavorite == false) R.drawable.heart else R.drawable.heart_fill),
+                                contentDescription = "Favorite"
+                            )
                         }
                         IconButton(onClick = {
                             // Todo: Implement Share Functionality
@@ -148,14 +159,18 @@ fun DailyQuoteScreen(
                 }
                 val description = words?.drop(3)?.joinToString(" ")
                 Text(
-                    modifier = Modifier.fillMaxWidth().shimmerEffect(isLoading = state.isLoading),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shimmerEffect(isLoading = state.isLoading),
                     text = title?.uppercase() ?: "",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
                 Text(
-                    modifier = Modifier.fillMaxWidth().shimmerEffect(isLoading = state.isLoading),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shimmerEffect(isLoading = state.isLoading),
                     text = description ?: "",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.outline
@@ -165,7 +180,7 @@ fun DailyQuoteScreen(
     }
 
     LaunchedEffect(true) {
-        viewModel.getRandomQuote()
+        viewModel.fetchRandomQuote()
     }
 
     SideEffect {

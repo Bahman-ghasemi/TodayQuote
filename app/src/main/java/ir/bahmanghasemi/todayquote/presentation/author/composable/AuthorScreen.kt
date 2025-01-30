@@ -7,7 +7,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,11 +39,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.room.util.newStringBuilder
 import coil3.compose.AsyncImage
 import ir.bahmanghasemi.todayquote.R
 import ir.bahmanghasemi.todayquote.common.presentation.ui.theme.LocalFontFamilySupraRounded
-import ir.bahmanghasemi.todayquote.common.presentation.ui.theme.fontFamilySupraRounded
 import ir.bahmanghasemi.todayquote.domain.model.Author
 import ir.bahmanghasemi.todayquote.presentation.daily_quote.QuoteViewModel
 
@@ -178,6 +175,6 @@ fun SharedTransitionScope.AuthorScreen(
     }
 
     LaunchedEffect(true) {
-        viewmodel.getAuthorQuotes(author.slug)
+        viewmodel.fetchAuthorQuotes(author.slug)
     }
 }
