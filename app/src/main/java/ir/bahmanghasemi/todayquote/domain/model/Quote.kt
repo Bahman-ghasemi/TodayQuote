@@ -5,6 +5,7 @@ data class Quote(
     val author: String,
     val authorSlug: String,
     val content: String,
+    val isFavorite: Boolean = false,
     val dateAdded: String,
     val dateModified: String,
     val length: Int,
