@@ -2,9 +2,7 @@ package ir.bahmanghasemi.todayquote.common.data.util
 
 import ir.bahmanghasemi.todayquote.R
 
-class Shape {
-    companion object {
-
+object Shape {
         fun shapes(): List<Int> {
             return listOf(
                 R.drawable.abstract_shape_1,
@@ -31,5 +29,4 @@ class Shape {
         }
 
         fun random(): Int = shapes().random()
-    }
 }

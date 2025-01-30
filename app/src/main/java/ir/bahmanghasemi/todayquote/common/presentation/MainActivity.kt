@@ -41,6 +41,7 @@ import ir.bahmanghasemi.todayquote.domain.model.Author
 import ir.bahmanghasemi.todayquote.presentation.author.composable.AuthorScreen
 import ir.bahmanghasemi.todayquote.presentation.author.composable.AuthorsScreen
 import ir.bahmanghasemi.todayquote.presentation.daily_quote.composable.DailyQuoteScreen
+import ir.bahmanghasemi.todayquote.presentation.favorite.composable.FavoriteScreen
 import ir.bahmanghasemi.todayquote.presentation.notification.composable.NotificationScreen
 import kotlin.reflect.typeOf
 
@@ -177,7 +178,7 @@ private fun AppNavigation(paddingValues: PaddingValues, navController: NavHostCo
                 }
 
                 composable<FavoriteRoute> {
-                    // ProfileScreen
+                    FavoriteScreen(animatedVisibilityScope = this)
                 }
                 composable<NotificationRoute> {
                     NotificationScreen()
