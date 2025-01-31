@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.bahmanghasemi.todayquote.common.data.util.Connectivity
 import ir.bahmanghasemi.todayquote.common.data.util.Shape
+import ir.bahmanghasemi.todayquote.data.data_source.mapper.AuthorDtoMapper
 import ir.bahmanghasemi.todayquote.domain.use_case.author.AuthorUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthorViewModel @Inject constructor(
     private val useCase: AuthorUseCase,
+    private val mapper: AuthorDtoMapper,
     private val application: Application
 ) : AndroidViewModel(application) {
 
@@ -38,7 +40,7 @@ class AuthorViewModel @Inject constructor(
                                 }
                                 author.copy(shape = Shape.shapes()[idx])
                             }
-                            _uiState.update { AuthorUiState(authors = authors) }
+                            _uiState.update { AuthorUiState(authors = authors.map { mapper.toDomain(it) }) }
                         }
                     } else {
                         _uiState.update { AuthorUiState(errorMessage = response.message()) }
