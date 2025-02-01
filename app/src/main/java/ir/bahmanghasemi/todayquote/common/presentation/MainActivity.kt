@@ -37,12 +37,14 @@ import ir.bahmanghasemi.todayquote.common.presentation.util.navigation.AuthorRou
 import ir.bahmanghasemi.todayquote.common.presentation.util.navigation.DailyRoute
 import ir.bahmanghasemi.todayquote.common.presentation.util.navigation.FavoriteRoute
 import ir.bahmanghasemi.todayquote.common.presentation.util.navigation.NotificationRoute
+import ir.bahmanghasemi.todayquote.common.presentation.util.navigation.SplashRoute
 import ir.bahmanghasemi.todayquote.domain.model.Author
 import ir.bahmanghasemi.todayquote.presentation.author.composable.AuthorScreen
 import ir.bahmanghasemi.todayquote.presentation.author.composable.AuthorsScreen
 import ir.bahmanghasemi.todayquote.presentation.daily_quote.composable.DailyQuoteScreen
 import ir.bahmanghasemi.todayquote.presentation.favorite.composable.FavoriteScreen
 import ir.bahmanghasemi.todayquote.presentation.notification.composable.NotificationScreen
+import ir.bahmanghasemi.todayquote.presentation.splash.compsable.SplashScreen
 import kotlin.reflect.typeOf
 
 @AndroidEntryPoint
@@ -53,11 +55,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             TodayQuoteTheme {
                 val navController = rememberNavController()
+                val backStackEntry = navController.currentBackStackEntryAsState()
+                val currentDestination = backStackEntry.value?.destination?.route
+
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize(),
                     bottomBar = {
-                        BottomNavMenu(navController)
+                        if (currentDestination != SplashRoute.serializer().descriptor.serialName)
+                            BottomNavMenu(navController)
                     }) { innerPadding ->
                     AppNavigation(innerPadding, navController)
                 }
@@ -152,7 +158,16 @@ private fun AppNavigation(paddingValues: PaddingValues, navController: NavHostCo
             .padding(paddingValues)
     ) {
         SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {
-            NavHost(navController = navController, startDestination = DailyRoute) {
+            NavHost(navController = navController, startDestination = SplashRoute) {
+
+                composable<SplashRoute> {
+                    SplashScreen {
+                        navController.navigate(DailyRoute) {
+                            popUpTo<DailyRoute>()
+                            launchSingleTop = true
+                        }
+                    }
+                }
 
                 composable<DailyRoute> {
                     DailyQuoteScreen()

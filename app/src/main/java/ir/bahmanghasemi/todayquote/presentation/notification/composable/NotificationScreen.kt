@@ -3,6 +3,7 @@ package ir.bahmanghasemi.todayquote.presentation.notification.composable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,10 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import ir.bahmanghasemi.todayquote.R
 import ir.bahmanghasemi.todayquote.common.data.data_source.pref.encryptedPreferences
 import ir.bahmanghasemi.todayquote.common.data.util.Const
 import ir.bahmanghasemi.todayquote.common.presentation.component.TimeType
@@ -50,91 +55,102 @@ fun NotificationScreen() {
     var selectedHour by remember { mutableIntStateOf(context.encryptedPreferences().get(Const.DAILY_NOTIFICATION_HOUR, 0)) }
     var selectedMinute by remember { mutableIntStateOf(context.encryptedPreferences().get(Const.DAILY_NOTIFICATION_MINUTE, 0)) }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp)
-            .padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
+    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 40.dp, end = 40.dp),
-            text = "Notification",
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = Color.Black
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            Text(
-                text = "Daily",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-
-            Switch(
-                modifier = Modifier
-                    .padding(horizontal = 2.dp),
-                checked = isChecked,
-                onCheckedChange = {
-                    isChecked = it
-                },
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.colorScheme.background,
-                    checkedIconColor = MaterialTheme.colorScheme.primary,
-                    checkedTrackColor = MaterialTheme.colorScheme.primary
-
-                ),
-                thumbContent = {
-                    when (isChecked) {
-                        true -> Text(text = "On", fontWeight = FontWeight.Bold)
-                        false -> Text(text = "Off", fontWeight = FontWeight.Bold)
-                    }
-                }
-            )
-        }
-
-        Text(
-            text = "Set the daily notification time.",
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Row(
+        Column(
             Modifier
                 .fillMaxWidth()
-                .pointerInput(isChecked) {
-                    if (!isChecked) {
-                        awaitPointerEventScope { while (true) awaitPointerEvent() }
-                    }
-                },
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(space = 8.dp, alignment = Alignment.CenterHorizontally)
+                .padding(horizontal = 24.dp)
+                .padding(top = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            VerticalTime(type = TimeType.HOUR, initialTime = selectedHour, enabled = isChecked) {
-                selectedHour = it
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 40.dp, end = 40.dp),
+                text = "Notification",
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = Color.Black
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Text(
+                    text = "Daily",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Switch(
+                    modifier = Modifier
+                        .padding(horizontal = 2.dp),
+                    checked = isChecked,
+                    onCheckedChange = {
+                        isChecked = it
+                    },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.background,
+                        checkedIconColor = MaterialTheme.colorScheme.primary,
+                        checkedTrackColor = MaterialTheme.colorScheme.primary
+
+                    ),
+                    thumbContent = {
+                        when (isChecked) {
+                            true -> Text(text = "On", fontWeight = FontWeight.Bold)
+                            false -> Text(text = "Off", fontWeight = FontWeight.Bold)
+                        }
+                    }
+                )
             }
 
             Text(
-                text = ":",
-                style = MaterialTheme.typography.displayLarge,
-                color = if (isChecked) LocalContentColor.current else IconButtonDefaults.iconButtonColors().disabledContentColor
+                text = "Set the daily notification time.",
+                style = MaterialTheme.typography.bodyMedium
             )
 
-            VerticalTime(type = TimeType.MINUTE, initialTime = selectedMinute, enabled = isChecked) {
-                selectedMinute = it
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .pointerInput(isChecked) {
+                        if (!isChecked) {
+                            awaitPointerEventScope { while (true) awaitPointerEvent() }
+                        }
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(space = 8.dp, alignment = Alignment.CenterHorizontally)
+            ) {
+                VerticalTime(type = TimeType.HOUR, initialTime = selectedHour, enabled = isChecked) {
+                    selectedHour = it
+                }
+
+                Text(
+                    text = ":",
+                    style = MaterialTheme.typography.displayLarge,
+                    color = if (isChecked) LocalContentColor.current else IconButtonDefaults.iconButtonColors().disabledContentColor
+                )
+
+                VerticalTime(type = TimeType.MINUTE, initialTime = selectedMinute, enabled = isChecked) {
+                    selectedMinute = it
+                }
             }
+
         }
 
+        AsyncImage(
+            modifier = Modifier.fillMaxHeight(),
+            model = R.drawable.abstract_shape_notification,
+            contentDescription = "notification",
+            contentScale = ContentScale.FillWidth,
+            alignment = Alignment.BottomCenter
+        )
     }
 
     LaunchedEffect(isChecked, selectedHour, selectedMinute) {
