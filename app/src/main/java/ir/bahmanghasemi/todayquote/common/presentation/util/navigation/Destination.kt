@@ -4,6 +4,9 @@ import ir.bahmanghasemi.todayquote.domain.model.Author
 import kotlinx.serialization.Serializable
 
 @Serializable
+object SplashRoute
+
+@Serializable
 object DailyRoute
 
 @Serializable
